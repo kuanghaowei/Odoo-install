@@ -30,8 +30,10 @@ IS_ENTERPRISE="False"
 # Set this to True if you want to install Nginx!
 INSTALL_NGINX="False"
 # Set the superadmin password - if GENERATE_RANDOM_PASSWORD is set to "True" we will automatically generate a random password, otherwise we use this one
+#修改：改为password138
 OE_SUPERADMIN="password138"
 # Set to "True" to generate a random password, "False" to use the variable in OE_SUPERADMIN
+#修改：True改为False
 GENERATE_RANDOM_PASSWORD="False"
 OE_CONFIG="${OE_USER}-server"
 # Set the website name
@@ -41,7 +43,8 @@ LONGPOLLING_PORT="8072"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
 ENABLE_SSL="True"
 # Provide Email to register ssl certificate
-ADMIN_EMAIL="odoo@example.com"
+#修改：邮箱更改odoo@example.com改为wsiicn@qq.com
+ADMIN_EMAIL="wsiicn@qq.com"
 ##
 ###  WKHTMLTOPDF download links
 ## === Ubuntu Trusty x64 & x32 === (for other distributions please replace these two links,
@@ -49,6 +52,7 @@ ADMIN_EMAIL="odoo@example.com"
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/13.0/setup/install.html#debian-ubuntu
 
+#修改：0.12.5改为0.12.6
 WKHTMLTOX_X64=https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb
 WKHTMLTOX_X32=https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.trusty_i386.deb
 #--------------------------------------------------
@@ -61,6 +65,8 @@ sudo add-apt-repository universe
 sudo add-apt-repository "deb http://mirrors.kernel.org/ubuntu/ xenial main"
 sudo apt-get update
 sudo apt-get upgrade -y
+#修改：增加安装unzip
+sudo apt-get install unzip -y
 
 #--------------------------------------------------
 # Install PostgreSQL Server
@@ -181,6 +187,28 @@ echo -e "* Create startup file"
 sudo su root -c "echo '#!/bin/sh' >> $OE_HOME_EXT/start.sh"
 sudo su root -c "echo 'sudo -u $OE_USER $OE_HOME_EXT/odoo-bin --config=/etc/${OE_CONFIG}.conf' >> $OE_HOME_EXT/start.sh"
 sudo chmod 755 $OE_HOME_EXT/start.sh
+
+#修改：增加安装中文字体
+#--------------------------------------------------
+# 安装中文字体，装完后要重启
+#--------------------------------------------------
+# 中文字体
+sudo apt-get install xfonts-utils -y
+sudo apt-get install unzip -y
+sudo apt-get install ttf-wqy-* -y && sudo apt-get install ttf-wqy-zenhei -y && sudo apt-get install ttf-wqy-microhei -y
+sudo apt-get install language-pack-zh-hant language-pack-zh-hans -y
+
+sudo sh -c 'echo "LANG=\"zh_CN.UTF-8\"" > /etc/default/locale'
+sudo chmod -R 0755 /usr/share/fonts/truetype/wqy && sudo chmod -R 0755 /usr/share/fonts/truetype/wqy/*
+sudo rm -rf /usr/share/fonts/truetype/microsoft
+sudo mkdir /usr/share/fonts/truetype/microsoft
+sudo wget -x -q $O_FONT -O /usr/share/fonts/truetype/microsoft/microsoft.zip
+sudo unzip -q -d /usr/share/fonts/truetype/microsoft /usr/share/fonts/truetype/microsoft/microsoft.zip
+sudo rm /usr/share/fonts/truetype/microsoft/microsoft.zip
+sudo chmod -R 0755 /usr/share/fonts/truetype/microsoft && sudo chmod -R 0755 /usr/share/fonts/truetype/microsoft/*
+cd /usr/share/fonts/truetype/wqy && sudo mkfontscale && sudo mkfontdir && sudo fc-cache -fv
+cd /usr/share/fonts/truetype/microsoft && sudo mkfontscale && sudo mkfontdir && sudo fc-cache -fv
+
 
 #--------------------------------------------------
 # Adding ODOO as a deamon (initscript)
