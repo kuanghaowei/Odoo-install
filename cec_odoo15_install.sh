@@ -65,8 +65,8 @@ sudo add-apt-repository universe
 sudo add-apt-repository "deb http://mirrors.kernel.org/ubuntu/ xenial main"
 sudo apt-get update
 sudo apt-get upgrade -y
-#修改：增加安装unzip/git
-sudo apt-get install unzip git -y
+#修改：增加安装unzip
+sudo apt-get install unzip -y
 
 #--------------------------------------------------
 # Install PostgreSQL Server
